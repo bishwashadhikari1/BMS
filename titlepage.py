@@ -2,7 +2,7 @@ from tkinter import *
 
 from PIL import ImageTk, Image
 
-root = Tk()
+root = Tk()  # creates window
 root.geometry("1280x720")
 root.config(bg="#5678A9")
 
