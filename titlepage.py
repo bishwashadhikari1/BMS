@@ -28,11 +28,11 @@ def register_page_function():
     register_page_background = Label(register_page, image=register_page_image, width=1280, height=720)
     register_page_background.place(x=-3, y=-3)
 
-    un_entry = Entry(register_page, text=username_register, bg="#5A67A8", bd=0, font=13, width=20)
-    pw_entry = Entry(register_page, text=password_register, bg="#5A67A8", bd=0, font=13, width=20)
-    f_name_entry = Entry(register_page, text=f_name_register, bg="#5A67A8", bd=0, font=13, width=20)
-    l_name_entry = Entry(register_page, text=l_name_register, bg="#5A67A8", bd=0, font=13, width=20)
-    e_mail_entry = Entry(register_page, text=e_mail_register, bg="#5A67A8", bd=0, font=13, width=20)
+    un_entry = Entry(register_page, text=username_register, bg="#5A67A8", bd=0, font=13, width=19)
+    pw_entry = Entry(register_page, text=password_register, bg="#5A67A8", bd=0, font=13, width=19)
+    f_name_entry = Entry(register_page, text=f_name_register, bg="#5A67A8", bd=0, font=13, width=19)
+    l_name_entry = Entry(register_page, text=l_name_register, bg="#5A67A8", bd=0, font=13, width=19)
+    e_mail_entry = Entry(register_page, text=e_mail_register, bg="#5A67A8", bd=0, font=13, width=19)
 
     un_entry.place(x=524, y=155)
     pw_entry.place(x=524, y=228)
