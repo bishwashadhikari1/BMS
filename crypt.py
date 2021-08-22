@@ -5,7 +5,7 @@ from egcd import egcd  # pip install egcd
 
 # characters that are usually be used in a string
 
-alphabet ='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_-=+/.,<>:;?\|{}[]`~ '
+alphabet ='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*_-=+/.<>:;?\|`~ '
 
 
 letter_to_index = dict(zip(alphabet, range(len(alphabet))))

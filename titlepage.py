@@ -1,6 +1,7 @@
 from tkinter import *
 from crypt import *
-global K, Kinv
+import sqlite3
+
 root = Tk()  # creates window
 root.geometry("1280x720")
 root.config(bg="#5678A9")
@@ -10,7 +11,7 @@ register_page = LabelFrame(root)
 def register_page_function():
     """ register page function"""
 
-    global titlepagef, sign_in_page, register_page_image, back_btn_img
+    global titlepagef, sign_in_page, register_page_image, back_btn_img, tnc_check, error5_img, pw_encrypted
 
     titlepagef.destroy()
     sign_in_page.destroy()
@@ -20,6 +21,7 @@ def register_page_function():
     f_name_register = StringVar()
     l_name_register = StringVar()
     e_mail_register = StringVar()
+    tnc_check = IntVar()
 
     register_page = LabelFrame(root, width=1280, height=720)
     register_page.place(x=0, y=0)
@@ -40,6 +42,102 @@ def register_page_function():
     l_name_entry.place(x=524, y=374)
     e_mail_entry.place(x=524, y=447)
 
+
+    Checkbutton(register_page,
+                bg="#5A67A8",
+                bd=0,
+                width=1,
+                height=1,
+                activebackground="#5A67A8",
+                variable=tnc_check,
+                onvalue=1,
+                offvalue=0,
+                ).place(x=512, y=534)
+
+    button_is = "OFF"
+
+    error_frame = LabelFrame(register_page)
+    error_frame.place(x=0, y=0)
+
+    def register_btn():
+        global error5_img, error3_img, error2_img, error1_img, error4_img
+
+        email_raw = str(e_mail_register.get())
+        un_encrypted = str(encrypt(username_register.get(), K))
+        pw_encrypted = str(encrypt(password_register.get(), K))
+        f_name_encrypted = str(encrypt(f_name_register.get(), K))
+        l_name_encrypted = str(encrypt(l_name_register.get(), K))
+        e_mail_encrypted = str(encrypt(e_mail_register.get(), K))
+        error5_img = PhotoImage(file="Images/error5reg.png")
+        error3_img = PhotoImage(file="Images/error3reg.png")
+        error1_img = PhotoImage(file="Images/error1reg.png")
+        error2_img = PhotoImage(file="Images/error2reg.png")
+        error4_img = PhotoImage(file="Images/error4reg.png")
+
+        error1_label = Label(register_page)
+        error1_label.destroy()
+        error2_label = Label(register_page)
+        error2_label.destroy()
+        error3_label = Label(register_page)
+        error3_label.destroy()
+        error4_label = Label(register_page)
+        error4_label.destroy()
+        error5_label = Label(register_page)
+        error5_label.destroy()
+        if tnc_check.get() == 0:
+            error5_label = Label(register_page, image=error5_img, bg="#5678A9")
+            error5_label.place(x=457, y=600)
+            valid1 = False
+        else:
+            valid1 = True
+
+        if len(pw_encrypted) <= 7:
+            error3_label = Label(register_page, image=error3_img, bg="#5678A9")
+            error3_label.place(x=520, y=564)
+            valid2 = False
+        else:
+            valid2 = True
+
+        if "@" in email_raw and "." in email_raw:
+            valid3 = True
+        else:
+            error2_label = Label(register_page, image=error2_img, bg="#5678A9")
+            error2_label.place(x=517, y=580)
+            valid3 = False
+
+        a = sqlite3.connect('databases/users_credentials.db')
+        c = a.cursor()
+        c.execute("SELECT * FROM reg_info")
+        existing_users = c.fetchall()
+
+        valid4 = True
+        for user in existing_users:
+            usrname = user[0]
+            if un_encrypted == usrname:
+                error4_label = Label(register_page, image=error4_img, bg= "#5678A9")
+                error4_label.place(x=558, y=488)
+                valid4 = False
+
+        valid5 = True
+        for email in existing_users:
+            emial = email[4]
+            if e_mail_encrypted == emial:
+                error1_label = Label(register_page, image=error1_img, bg="#5678A9")
+                error1_label.place(x=539, y=509)
+                valid5 = False
+
+
+        if valid1 == valid2 == valid3 == valid4 == valid5 == 1:
+            c.execute("INSERT INTO reg_info VALUES (:username, :password, :first_name, :last_name, :email)", {
+                'username': un_encrypted,
+                'password': pw_encrypted,
+                'first_name': f_name_encrypted,
+                'last_name': l_name_encrypted,
+                'email': e_mail_encrypted
+            })
+            a.commit()
+            a.close()
+
     def back_btnnm():
         """takes user back to title page"""
 
@@ -57,7 +155,8 @@ def register_page_function():
         command=back_btnnm,
     ).place(x=29, y=626)
 
-    Button(register_page, image=register_button_image, bg="#5678A9", bd=0, activebackground="#5678A9").place(x=526, y=612)
+    Button(register_page, image=register_button_image, bg="#5678A9", bd=0, activebackground="#5678A9",
+           command=register_btn).place(x=526, y=612)
 
 def sign_in_page_function():
     """ sign in page function """
