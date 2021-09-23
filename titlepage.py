@@ -691,6 +691,15 @@ def entry_function():
     item_remove_entry.place(x=830, y=414)
     transaction_code_entry.place(x=830, y=597)
     
+    def add_item_name():
+        pass
+
+    def remove_item_name():
+        pass
+
+    def add_transaction_code():
+        pass
+
     Button(
         home_page,
         image=analytics_img,
