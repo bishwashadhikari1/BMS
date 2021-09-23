@@ -14,7 +14,7 @@ entry_frame = LabelFrame(home_page)
 customers_frame = LabelFrame(home_page)
 inventory_frame = LabelFrame(home_page)
 
-
+# Try
 
 def register_page_function():
     """ register page function"""
