@@ -198,6 +198,7 @@ def register_page_function():
             customer_name text,
             customer_organization text,
             customer_email text,
+            customer_address text,
             customer_contact integer,
             customer_volume integer
             )"""
@@ -604,6 +605,25 @@ def customers_function():
         activebackground="#5678A9",
     ).place(x=35, y=664)
 
+    c = sqlite3.connect(f"databases/{current_sign_in}.db")
+    b = c.cursor()
+    b.execute("SELECT * FROM customers")
+    d = b.fetchall()
+    upper_limit = 10
+    lower_limit = 0
+    for details in range(lower_limit, upper_limit):
+        place_location = 250
+        print(details)
+        for detail_number in d:
+            Label(home_page, text=detail_number[1], bg="#5678A9", font=10).place(x=290, y=place_location)
+            Label(home_page, text=detail_number[0], bg="#5678A9", font=10).place(x=370, y=place_location)
+            Label(home_page, text=detail_number[2], bg="#5678A9", font=10).place(x=500, y=place_location)
+            Label(home_page, text=detail_number[3], bg="#5678A9", font=10).place(x=600, y=place_location)
+            Label(home_page, text=detail_number[4], bg="#5678A9", font=10).place(x=650, y=place_location)
+            Label(home_page, text=detail_number[5], bg="#5678A9", font=10).place(x=900, y=place_location)
+            Label(home_page, text=detail_number[6], bg="#5678A9", font=10).place(x=900, y=place_location)
+            place_location += 50
+
 
 def entry_function():
     global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
@@ -719,7 +739,6 @@ def entry_function():
         bd=0,
         activebackground="#5678A9",
     ).place(x=35, y=664)
-
 
 def inventory_function():
     global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
@@ -923,8 +942,8 @@ def add_customer_mbox():
             if customers[3] == email_c_reg.get():
                 valid1 = False
                 Label(home_page, image=c_add_error2, bg="#5678A9").place(x=589, y=549)
-            if customers[5] == number_c_reg.get():
-                valid2= False
+            elif customers[4] == number_c_reg.get():
+                valid2 = False
                 Label(home_page, image=c_add_error3, bg="#5678A9").place(x=589, y=549)
 
         if valid1 == True and valid2 == True:
@@ -939,6 +958,7 @@ def add_customer_mbox():
                    "customer_name": name_c_reg.get(),
                    "customer_organization": organization_c_reg.get(),
                    "customer_email": email_c_reg.get(),
+                   "customer_address": address_c_reg.get(),
                    "customer_contact": number_c_reg.get(),
                    "customer_volume": 0,
                 },
