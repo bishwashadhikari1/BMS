@@ -175,8 +175,8 @@ def register_page_function():
                       purchase_qty,
                       purchase_avg integer,
                       sales_avg integer
-            )         """
-            )
+            )"""
+                    )
 
             c.execute(
                 """ CREATE TABLE transaction_history(
@@ -188,19 +188,22 @@ def register_page_function():
             transaction_vol integer,
             remaining_vol integer,
             transaction_price integer,
-            customer_txn text,
-            ) """
-            )
+            customer_txn text
+            )"""
+                    )
 
             c.execute(
                 """CREATE TABLE customers(
+            customer_code integer,
             customer_name text,
             customer_organization text,
             customer_email text,
             customer_contact integer,
-            customer volume integer
-            ) """
-            )
+            customer_volume integer
+            )"""
+                    )
+            b.commit()
+            b.close()
 
     def back_btnnm():
         """takes user back to title page"""
@@ -233,13 +236,12 @@ def sign_in_page_function():
     """ sign in page function """
 
     global titlepagef, sign_in_page_image, sign_in_page_background, back_btn_img, sign_error1, sign_error2
-    global current_sign_in
+    global current_sign_in, username_signin
 
     titlepagef.destroy()
 
     username_signin = StringVar()
     username_signin.set("Username")
-    current_sign_in = ""
 
     password_signin = StringVar()
     password_signin.set("Password")
@@ -323,6 +325,8 @@ def sign_in_page_function():
                     username_signin.get(), K
             ) and password_rec == encrypt(password_signin.get(), K):
                 valid_sign_in = True
+                current_sign_in = username_signin.get()
+
 
             elif username_rec == encrypt(
                     username_signin.get(), K
@@ -330,7 +334,6 @@ def sign_in_page_function():
                 password_not_matched = True
 
         if valid_sign_in is True:
-            current_sign_in = username_signin
             home_page_function()
 
         if password_not_matched is True and valid_sign_in is False:
@@ -802,6 +805,7 @@ def sign_out_function():
 
 
 def add_customer_mbox():
+    global c_add_success1, c_add_error2, c_add_error3
     global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
     global sign_out_img, add_customer, remove_customer, add_c_window, add_button
 
@@ -848,12 +852,48 @@ def add_customer_mbox():
     number_entry.place(x=602, y=427)
     address_entry.place(x=602, y=493)
 
-
     add_button = PhotoImage(file="Images/add_c_button.png")
 
     def add_b_click():
-        pass
+        global c_add_success1, c_add_error2, c_add_error3, i
+        c_add_success1 = PhotoImage(file="Images/Customer added successfully.png")
+        c_add_error2 = PhotoImage(file="Images/Customer with this email already exists.png")
+        c_add_error3 = PhotoImage(file="Images/Customer with this number already exists.png")
 
+        b = sqlite3.connect(f"databases/{current_sign_in}.db")
+        print(current_sign_in)
+        c = b.cursor()
+        c.execute("SELECT * FROM customers")
+        existing_customers = c.fetchall()
+        valid1 = True
+        valid2 = True
+
+        for customers in existing_customers:
+            if customers[3] == email_c_reg.get():
+                valid1 = False
+                Label(home_page, image=c_add_error2, bg="#5678A9").place(x=589, y=549)
+            if customers[5] == number_c_reg.get():
+                valid2= False
+                Label(home_page, image=c_add_error3, bg="#5678A9").place(x=589, y=549)
+
+        if valid1 == True and valid2 == True:
+            e = datetime.datetime.now()
+            customer_code_reg = "%s%s%s%s%s%s" % (e.year, e.month, e.day, e.hour, e.minute, e.second)
+            Label(home_page, image=c_add_success1, bg="#5678A9").place(x=589, y=549)
+            c.execute(
+                 "INSERT INTO customers VALUES(:customer_code, :customer_name, :customer_organization, :customer_email,\
+                :customer_contact, :customer_volume)",
+                {
+                   "customer_code": customer_code_reg,
+                   "customer_name": name_c_reg.get(),
+                   "customer_organization": organization_c_reg.get(),
+                   "customer_email": email_c_reg.get(),
+                   "customer_contact": number_c_reg.get(),
+                   "customer_volume": 0,
+                },
+                )
+            b.commit()
+            b.close()
     Button(
         home_page, image=add_button, bg="#5678A9", bd=0, activebackground="#5678A9", command=add_b_click
     ).place(x=710, y=535)
@@ -913,8 +953,6 @@ def add_customer_mbox():
     ).place(x=35, y=664)
 
 
-
-
 def remove_customer_mbox():
     global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
     global sign_out_img, add_customer, remove_customer, add_c_window, remove_c_window, remove_button
@@ -936,7 +974,6 @@ def remove_customer_mbox():
     def remove_c_click():
         pass
 
-
     Label(home_page, image=remove_c_window).place(x=573, y=198)
 
     remove_c_code = StringVar()
@@ -945,8 +982,6 @@ def remove_customer_mbox():
         home_page, text=remove_c_code, bg="#5A67A8", bd=0, font=8, width=21
     )
     code_entry.place(x=606, y=238)
-
-
 
     Button(
         home_page, image=remove_button, bg="#5678A9", bd=0, activebackground="#5678A9", command=remove_c_click
@@ -1004,8 +1039,6 @@ def remove_customer_mbox():
     ).place(x=35, y=664)
 
 
-
-
-home_page_function()
+title_function()
 
 mainloop()
