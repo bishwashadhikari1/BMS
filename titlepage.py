@@ -607,7 +607,7 @@ def customers_function():
 
 def entry_function():
     global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
-    global sign_out_img
+    global sign_out_img, entry_details
 
     home_page = LabelFrame(root)
     home_page.destroy()
@@ -617,9 +617,60 @@ def entry_function():
     home_page_image = PhotoImage(file="Images/homepage.png")
 
     Label(home_page, image=home_page_image).place(x=-1, y=-1)
-    entry_frame = LabelFrame(home_page).place(x=265, y=88)
-    Label(entry_frame, image=entry_img, bg="#000000").place(x=650, y=106)
+    Label(home_page, image=entry_img, bg="#000000").place(x=650, y=106)
 
+    entry_details = PhotoImage(file="Images/entry_page_img.png")
+    Label(home_page, image=entry_details).place(x=-1, y=-1)
+
+    item_name_c_reg = StringVar()
+    quantity_c_reg = StringVar()
+    type_c_reg = StringVar()
+    customer_c_reg = StringVar()
+    price_per_unit_c_reg = StringVar()
+    item_add_c_reg = StringVar()
+    item_remove_c_reg = StringVar()
+    transaction_code_c_reg = StringVar()
+
+    item_name_entry = Entry(
+        home_page, text=item_name_c_reg, bg="#5A67A8", bd=0, font=8, width=21
+    )
+
+    quantity_entry = Entry(
+        home_page, text=quantity_c_reg, bg="#5A67A8", bd=0, font=8, width=21
+    )
+
+    type_entry = Entry(
+        home_page, text=type_c_reg, bg="#5A67A8", bd=0, font=8, width=21
+    )
+
+    customer_entry = Entry(
+        home_page, text=customer_c_reg, bg="#5A67A8", bd=0, font=8, width=21
+    )
+    price_per_unit_entry = Entry(
+        home_page, text=price_per_unit_c_reg, bg="#5A67A8", bd=0, font=8, width=21
+    )
+
+    item_add_entry = Entry(
+        home_page, text=item_add_c_reg, bg="#5A67A8", bd=0, font=8, width=21
+    )
+
+    item_remove_entry = Entry(
+        home_page, text=item_remove_c_reg, bg="#5A67A8", bd=0, font=8, width=21
+    )
+
+    transaction_code_entry = Entry(
+        home_page, text=transaction_code_c_reg, bg="#5A67A8", bd=0, font=8, width=21
+    )
+
+    item_name_entry.place(x=340, y=215)
+    quantity_entry.place(x=340, y=297)
+    type_entry.place(x=340, y=380)
+    customer_entry.place(x=340, y=462)
+    price_per_unit_entry.place(x=340, y=548)
+    item_add_entry.place(x=830, y=228)
+    item_remove_entry.place(x=830, y=414)
+    transaction_code_entry.place(x=830, y=597)
+    
     Button(
         home_page,
         image=analytics_img,
