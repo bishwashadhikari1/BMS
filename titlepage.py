@@ -15,7 +15,6 @@ entry_frame = LabelFrame(home_page)
 customers_frame = LabelFrame(home_page)
 inventory_frame = LabelFrame(home_page)
 
-# test
 
 def register_page_function():
     """ register page function"""
