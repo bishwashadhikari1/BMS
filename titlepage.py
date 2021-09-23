@@ -1,6 +1,7 @@
 from tkinter import *
 from crypt import *
 import sqlite3
+import datetime
 
 root = Tk()  # creates window
 root.geometry("1280x720")
@@ -14,7 +15,7 @@ entry_frame = LabelFrame(home_page)
 customers_frame = LabelFrame(home_page)
 inventory_frame = LabelFrame(home_page)
 
-# test
+
 
 def register_page_function():
     """ register page function"""
@@ -172,6 +173,7 @@ def register_page_function():
                       item_name text,
                       remaining_qty integer,
                       sold_qty integer,
+                      purchase_qty,
                       purchase_avg integer,
                       sales_avg integer
             )         """
@@ -182,18 +184,22 @@ def register_page_function():
             transaction_id integer PRIMARY KEY,
             item_code integer,
             item_name text,
+            transaction_date integer,
             transaction_type text,
             transaction_vol integer,
             remaining_vol integer,
-            transaction_price integer
+            transaction_price integer,
+            customer_txn text,
             ) """
             )
 
             c.execute(
                 """CREATE TABLE customers(
             customer_name text,
+            customer_organization text,
             customer_email text,
-            customer_contact integer
+            customer_contact integer,
+            customer volume integer
             ) """
             )
 
@@ -228,11 +234,13 @@ def sign_in_page_function():
     """ sign in page function """
 
     global titlepagef, sign_in_page_image, sign_in_page_background, back_btn_img, sign_error1, sign_error2
+    global current_sign_in
 
     titlepagef.destroy()
 
     username_signin = StringVar()
     username_signin.set("Username")
+    current_sign_in = ""
 
     password_signin = StringVar()
     password_signin.set("Password")
@@ -296,7 +304,7 @@ def sign_in_page_function():
     def submit_sign_in():
         """ verify sign in details then provide access accordingly"""
 
-        global sign_error1, sign_error2
+        global sign_error1, sign_error2, current_sign_in
 
         a = sqlite3.connect("databases/users_credentials.db")
         c = a.cursor()
@@ -323,6 +331,7 @@ def sign_in_page_function():
                 password_not_matched = True
 
         if valid_sign_in is True:
+            current_sign_in = username_signin
             home_page_function()
 
         if password_not_matched is True and valid_sign_in is False:
@@ -396,10 +405,6 @@ def home_page_function():
 
     Label(home_page, image=home_page_image).place(x=-1, y=-1)
 
-    class_frame_img = PhotoImage(file="Images/framery.png")
-
-    Label(home_page, image=class_frame_img, bg="#5678A9").place(x=265, y=88)
-
     analytics_img = PhotoImage(file="Images/Analytics.png")
     customers_img = PhotoImage(file="Images/Customer.png")
     entry_img = PhotoImage(file="Images/Entry.png")
@@ -413,24 +418,57 @@ def home_page_function():
     customers_frame = LabelFrame(home_page)
     inventory_frame = LabelFrame(home_page)
 
-
-
-    Button(home_page, image=analytics_img, bg="#5678A9", command=analytics_function,
-           bd=0, activebackground="#5678A9").place(x=20, y=543)
-    Button(home_page, image=customers_img, bg="#5678A9", command=customers_function,
-           bd=0, activebackground="#5678A9").place(x=20, y=154)
-    Button(home_page, image=entry_img, bg="#5678A9", command=entry_function,
-           bd=0, activebackground="#5678A9").place(x=60, y=410)
-    Button(home_page, image=inventory_img, bg="#5678A9", command=inventory_function,
-           bd=0, activebackground="#5678A9").place(x=25, y=20)
-    Button(home_page, image=transactions_img, bg="#5678A9", command=transactions_function,
-           bd=0, activebackground="#5678A9").place(x=10, y=283)
-    Button(home_page, image=sign_out_img, bg="#5678A9", command=sign_out_function,
-           bd=0, activebackground="#5678A9").place(x=35, y=664)
+    Button(
+        home_page,
+        image=analytics_img,
+        bg="#5678A9",
+        command=analytics_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=20, y=543)
+    Button(
+        home_page,
+        image=customers_img,
+        bg="#5678A9",
+        command=customers_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=20, y=154)
+    Button(
+        home_page,
+        image=entry_img,
+        bg="#5678A9",
+        command=entry_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=60, y=410)
+    Button(
+        home_page,
+        image=inventory_img,
+        bg="#5678A9",
+        command=inventory_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=25, y=20)
+    Button(
+        home_page,
+        image=transactions_img,
+        bg="#5678A9",
+        command=transactions_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=10, y=283)
+    Button(
+        home_page,
+        image=sign_out_img,
+        bg="#5678A9",
+        command=sign_out_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=35, y=664)
 
 
 def analytics_function():
-
     global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
     global sign_out_img
 
@@ -443,24 +481,59 @@ def analytics_function():
 
     Label(home_page, image=home_page_image).place(x=-1, y=-1)
 
-    Button(home_page, image=analytics_img, bg="#5678A9", command=analytics_function,
-           bd=0, activebackground="#5678A9").place(x=20, y=543)
-    Button(home_page, image=customers_img, bg="#5678A9", command=customers_function,
-           bd=0, activebackground="#5678A9").place(x=20, y=154)
-    Button(home_page, image=entry_img, bg="#5678A9", command=entry_function,
-           bd=0, activebackground="#5678A9").place(x=60, y=410)
-    Button(home_page, image=inventory_img, bg="#5678A9", command=inventory_function,
-           bd=0, activebackground="#5678A9").place(x=25, y=20)
-    Button(home_page, image=transactions_img, bg="#5678A9", command=transactions_function,
-           bd=0, activebackground="#5678A9").place(x=10, y=283)
-    Button(home_page, image=sign_out_img, bg="#5678A9", command=sign_out_function,
-           bd=0, activebackground="#5678A9").place(x=35, y=664)
-
+    Button(
+        home_page,
+        image=analytics_img,
+        bg="#5678A9",
+        command=analytics_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=20, y=543)
+    Button(
+        home_page,
+        image=customers_img,
+        bg="#5678A9",
+        command=customers_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=20, y=154)
+    Button(
+        home_page,
+        image=entry_img,
+        bg="#5678A9",
+        command=entry_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=60, y=410)
+    Button(
+        home_page,
+        image=inventory_img,
+        bg="#5678A9",
+        command=inventory_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=25, y=20)
+    Button(
+        home_page,
+        image=transactions_img,
+        bg="#5678A9",
+        command=transactions_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=10, y=283)
+    Button(
+        home_page,
+        image=sign_out_img,
+        bg="#5678A9",
+        command=sign_out_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=35, y=664)
 
 
 def customers_function():
     global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
-    global sign_out_img
+    global sign_out_img, add_customer, remove_customer, add_c_window
 
     home_page = LabelFrame(root)
     home_page.destroy()
@@ -472,30 +545,65 @@ def customers_function():
 
     add_customer = PhotoImage(file="Images/add customer.png")
     remove_customer = PhotoImage(file="Images/remove_customer.png")
+    add_c_window = PhotoImage(file="Images/add_customer_window.png")
 
-
-
-
-    Button(home_page, image=add_customer, bg="35678A9", bd=0, activebackground="#5678A9").place(x=927, y=96)
-    Button(home_page, image=remove_customer, bbg="$5678A9", bd=0, activebackground="#5678A9")
-    Button(home_page, image=analytics_img, bg="#5678A9", command=analytics_function,
-           bd=0, activebackground="#5678A9").place(x=20, y=543)
-    Button(home_page, image=customers_img, bg="#5678A9", command=customers_function,
-           bd=0, activebackground="#5678A9").place(x=20, y=154)
-    Button(home_page, image=entry_img, bg="#5678A9", command=entry_function,
-           bd=0, activebackground="#5678A9").place(x=60, y=410)
-    Button(home_page, image=inventory_img, bg="#5678A9", command=inventory_function,
-           bd=0, activebackground="#5678A9").place(x=25, y=20)
-    Button(home_page, image=transactions_img, bg="#5678A9", command=transactions_function,
-           bd=0, activebackground="#5678A9").place(x=10, y=283)
-    Button(home_page, image=sign_out_img, bg="#5678A9", command=sign_out_function,
-           bd=0, activebackground="#5678A9").place(x=35, y=664)
-
-
+    Button(
+        home_page, image=add_customer, bg="#5678A9", bd=0, activebackground="#5678A9", command=add_customer_mbox
+    ).place(x=927, y=96)
+    Button(
+        home_page, image=remove_customer, bg="#5678A9", bd=0, activebackground="#5678A9", command=remove_customer_mbox
+    ).place(x=310, y=96)
+    Button(
+        home_page,
+        image=analytics_img,
+        bg="#5678A9",
+        command=analytics_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=20, y=543)
+    Button(
+        home_page,
+        image=customers_img,
+        bg="#5678A9",
+        command=customers_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=20, y=154)
+    Button(
+        home_page,
+        image=entry_img,
+        bg="#5678A9",
+        command=entry_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=60, y=410)
+    Button(
+        home_page,
+        image=inventory_img,
+        bg="#5678A9",
+        command=inventory_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=25, y=20)
+    Button(
+        home_page,
+        image=transactions_img,
+        bg="#5678A9",
+        command=transactions_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=10, y=283)
+    Button(
+        home_page,
+        image=sign_out_img,
+        bg="#5678A9",
+        command=sign_out_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=35, y=664)
 
 
 def entry_function():
-
     global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
     global sign_out_img
 
@@ -507,24 +615,58 @@ def entry_function():
     home_page_image = PhotoImage(file="Images/homepage.png")
 
     Label(home_page, image=home_page_image).place(x=-1, y=-1)
-    Label(home_page, image=class_frame_img, bg="#5678A9").place(x=265, y=88)
-
-
     entry_frame = LabelFrame(home_page).place(x=265, y=88)
     Label(entry_frame, image=entry_img, bg="#000000").place(x=650, y=106)
 
-    Button(home_page, image=analytics_img, bg="#5678A9", command=analytics_function,
-           bd=0, activebackground="#5678A9").place(x=20, y=543)
-    Button(home_page, image=customers_img, bg="#5678A9", command=customers_function,
-           bd=0, activebackground="#5678A9").place(x=20, y=154)
-    Button(home_page, image=entry_img, bg="#5678A9", command=entry_function,
-           bd=0, activebackground="#5678A9").place(x=60, y=410)
-    Button(home_page, image=inventory_img, bg="#5678A9", command=inventory_function,
-           bd=0, activebackground="#5678A9").place(x=25, y=20)
-    Button(home_page, image=transactions_img, bg="#5678A9", command=transactions_function,
-           bd=0, activebackground="#5678A9").place(x=10, y=283)
-    Button(home_page, image=sign_out_img, bg="#5678A9", command=sign_out_function,
-           bd=0, activebackground="#5678A9").place(x=35, y=664)
+    Button(
+        home_page,
+        image=analytics_img,
+        bg="#5678A9",
+        command=analytics_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=20, y=543)
+    Button(
+        home_page,
+        image=customers_img,
+        bg="#5678A9",
+        command=customers_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=20, y=154)
+    Button(
+        home_page,
+        image=entry_img,
+        bg="#5678A9",
+        command=entry_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=60, y=410)
+    Button(
+        home_page,
+        image=inventory_img,
+        bg="#5678A9",
+        command=inventory_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=25, y=20)
+    Button(
+        home_page,
+        image=transactions_img,
+        bg="#5678A9",
+        command=transactions_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=10, y=283)
+    Button(
+        home_page,
+        image=sign_out_img,
+        bg="#5678A9",
+        command=sign_out_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=35, y=664)
+
 
 def inventory_function():
     global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
@@ -539,24 +681,59 @@ def inventory_function():
 
     Label(home_page, image=home_page_image).place(x=-1, y=-1)
 
-    Button(home_page, image=analytics_img, bg="#5678A9", command=analytics_function,
-           bd=0, activebackground="#5678A9").place(x=20, y=543)
-    Button(home_page, image=customers_img, bg="#5678A9", command=customers_function,
-           bd=0, activebackground="#5678A9").place(x=20, y=154)
-    Button(home_page, image=entry_img, bg="#5678A9", command=entry_function,
-           bd=0, activebackground="#5678A9").place(x=60, y=410)
-    Button(home_page, image=inventory_img, bg="#5678A9", command=inventory_function,
-           bd=0, activebackground="#5678A9").place(x=25, y=20)
-    Button(home_page, image=transactions_img, bg="#5678A9", command=transactions_function,
-           bd=0, activebackground="#5678A9").place(x=10, y=283)
-    Button(home_page, image=sign_out_img, bg="#5678A9", command=sign_out_function,
-           bd=0, activebackground="#5678A9").place(x=35, y=664)
+    Button(
+        home_page,
+        image=analytics_img,
+        bg="#5678A9",
+        command=analytics_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=20, y=543)
+    Button(
+        home_page,
+        image=customers_img,
+        bg="#5678A9",
+        command=customers_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=20, y=154)
+    Button(
+        home_page,
+        image=entry_img,
+        bg="#5678A9",
+        command=entry_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=60, y=410)
+    Button(
+        home_page,
+        image=inventory_img,
+        bg="#5678A9",
+        command=inventory_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=25, y=20)
+    Button(
+        home_page,
+        image=transactions_img,
+        bg="#5678A9",
+        command=transactions_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=10, y=283)
+    Button(
+        home_page,
+        image=sign_out_img,
+        bg="#5678A9",
+        command=sign_out_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=35, y=664)
 
 
 def transactions_function():
-
-    global home_page_image, clas
-    global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
+    global home_page_image
+    global home_page_image, analytics_img, customers_img, entry_img, inventory_img, transactions_img
     global sign_out_img
 
     home_page = LabelFrame(root)
@@ -567,31 +744,269 @@ def transactions_function():
     home_page_image = PhotoImage(file="Images/homepage.png")
 
     Label(home_page, image=home_page_image).place(x=-1, y=-1)
-    Label(home_page, image=class_frame_img, bg="#5678A9").place(x=265, y=88)
 
     transactions_frame = LabelFrame(home_page).place(x=265, y=88)
-    Label(transactions_frame, image=transactions_img, bg='#000000').place(x=650, y=106)
+    Label(transactions_frame, image=transactions_img, bg="#000000").place(x=650, y=106)
 
-
-    Button(home_page, image=analytics_img, bg="#5678A9", command=analytics_function,
-           bd=0, activebackground="#5678A9").place(x=20, y=543)
-    Button(home_page, image=customers_img, bg="#5678A9", command=customers_function,
-           bd=0, activebackground="#5678A9").place(x=20, y=154)
-    Button(home_page, image=entry_img, bg="#5678A9", command=entry_function,
-           bd=0, activebackground="#5678A9").place(x=60, y=410)
-    Button(home_page, image=inventory_img, bg="#5678A9", command=inventory_function,
-           bd=0, activebackground="#5678A9").place(x=25, y=20)
-    Button(home_page, image=transactions_img, bg="#5678A9", command=transactions_function,
-           bd=0, activebackground="#5678A9").place(x=10, y=283)
-    Button(home_page, image=sign_out_img, bg="#5678A9", command=sign_out_function,
-           bd=0, activebackground="#5678A9").place(x=35, y=664)
-
+    Button(
+        home_page,
+        image=analytics_img,
+        bg="#5678A9",
+        command=analytics_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=20, y=543)
+    Button(
+        home_page,
+        image=customers_img,
+        bg="#5678A9",
+        command=customers_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=20, y=154)
+    Button(
+        home_page,
+        image=entry_img,
+        bg="#5678A9",
+        command=entry_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=60, y=410)
+    Button(
+        home_page,
+        image=inventory_img,
+        bg="#5678A9",
+        command=inventory_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=25, y=20)
+    Button(
+        home_page,
+        image=transactions_img,
+        bg="#5678A9",
+        command=transactions_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=10, y=283)
+    Button(
+        home_page,
+        image=sign_out_img,
+        bg="#5678A9",
+        command=sign_out_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=35, y=664)
 
 
 def sign_out_function():
     title_function()
 
 
-title_function()
+def add_customer_mbox():
+    global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
+    global sign_out_img, add_customer, remove_customer, add_c_window, add_button
+
+    home_page = LabelFrame(root)
+    home_page.destroy()
+
+    home_page = LabelFrame(root).place(x=0, y=0)
+    home_page_image = PhotoImage(file="Images/customers_page.png")
+
+    Label(home_page, image=home_page_image).place(x=-2, y=-1)
+
+    add_customer = PhotoImage(file="Images/add customer.png")
+    remove_customer = PhotoImage(file="Images/remove_customer.png")
+    add_c_window = PhotoImage(file="Images/add_customer_window.png")
+    Label(home_page, image=add_c_window).place(x=573, y=198)
+
+    name_c_reg = StringVar()
+    organization_c_reg = StringVar()
+    email_c_reg = StringVar()
+    number_c_reg = StringVar()
+    address_c_reg = StringVar()
+
+    name_entry = Entry(
+        home_page, text=name_c_reg, bg="#5A67A8", bd=0, font=8, width=21
+    )
+    organization_entry = Entry(
+        home_page, text=organization_c_reg, bg="#5A67A8", bd=0, font=6, width=21
+    )
+
+    email_entry = Entry(
+        home_page, text=email_c_reg, bg="#5A67A8", bd=0, font=13, width=21
+    )
+
+    number_entry = Entry(
+        home_page, text=number_c_reg, bg="#5A67A8", bd=0, font=13, width=21
+    )
+    address_entry = Entry(
+        home_page, text=address_c_reg, bg="#5A67A8", bd=0, font=13, width=21
+    )
+
+    name_entry.place(x=602, y=235)
+    organization_entry.place(x=602, y=298)
+    email_entry.place(x=602, y=363)
+    number_entry.place(x=602, y=427)
+    address_entry.place(x=602, y=493)
+
+
+    add_button = PhotoImage(file="Images/add_c_button.png")
+
+    def add_b_click():
+        pass
+
+    Button(
+        home_page, image=add_button, bg="#5678A9", bd=0, activebackground="#5678A9", command=add_b_click
+    ).place(x=710, y=535)
+    Button(
+        home_page, image=add_customer, bg="#5678A9", bd=0, activebackground="#5678A9", command=add_customer_mbox
+    ).place(x=927, y=96)
+    Button(
+        home_page, image=remove_customer, bg="#5678A9", bd=0, activebackground="#5678A9", command=remove_customer_mbox
+    ).place(x=310, y=96)
+    Button(
+        home_page,
+        image=analytics_img,
+        bg="#5678A9",
+        command=analytics_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=20, y=543)
+    Button(
+        home_page,
+        image=customers_img,
+        bg="#5678A9",
+        command=customers_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=20, y=154)
+    Button(
+        home_page,
+        image=entry_img,
+        bg="#5678A9",
+        command=entry_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=60, y=410)
+    Button(
+        home_page,
+        image=inventory_img,
+        bg="#5678A9",
+        command=inventory_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=25, y=20)
+    Button(
+        home_page,
+        image=transactions_img,
+        bg="#5678A9",
+        command=transactions_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=10, y=283)
+    Button(
+        home_page,
+        image=sign_out_img,
+        bg="#5678A9",
+        command=sign_out_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=35, y=664)
+
+
+
+
+def remove_customer_mbox():
+    global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
+    global sign_out_img, add_customer, remove_customer, add_c_window, remove_c_window, remove_button
+
+    home_page = LabelFrame(root)
+    home_page.destroy()
+
+    home_page = LabelFrame(root).place(x=0, y=0)
+    home_page_image = PhotoImage(file="Images/customers_page.png")
+
+    Label(home_page, image=home_page_image).place(x=-2, y=-1)
+    remove_button = PhotoImage(file="Images/remove_c_button.png")
+
+    add_customer = PhotoImage(file="Images/add customer.png")
+    remove_customer = PhotoImage(file="Images/remove_customer.png")
+    add_c_window = PhotoImage(file="Images/add_customer_window.png")
+    remove_c_window = PhotoImage(file="Images/remove_customer_window.png")
+
+    def remove_c_click():
+        pass
+
+
+    Label(home_page, image=remove_c_window).place(x=573, y=198)
+
+    remove_c_code = StringVar()
+
+    code_entry = Entry(
+        home_page, text=remove_c_code, bg="#5A67A8", bd=0, font=8, width=21
+    )
+    code_entry.place(x=606, y=238)
+
+
+
+    Button(
+        home_page, image=remove_button, bg="#5678A9", bd=0, activebackground="#5678A9", command=remove_c_click
+    ).place(x=696, y=275)
+    Button(
+        home_page, image=add_customer, bg="#5678A9", bd=0, activebackground="#5678A9", command=add_customer_mbox
+    ).place(x=927, y=96)
+    Button(
+        home_page,
+        image=analytics_img,
+        bg="#5678A9",
+        command=analytics_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=20, y=543)
+    Button(
+        home_page,
+        image=customers_img,
+        bg="#5678A9",
+        command=customers_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=20, y=154)
+    Button(
+        home_page,
+        image=entry_img,
+        bg="#5678A9",
+        command=entry_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=60, y=410)
+    Button(
+        home_page,
+        image=inventory_img,
+        bg="#5678A9",
+        command=inventory_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=25, y=20)
+    Button(
+        home_page,
+        image=transactions_img,
+        bg="#5678A9",
+        command=transactions_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=10, y=283)
+    Button(
+        home_page,
+        image=sign_out_img,
+        bg="#5678A9",
+        command=sign_out_function,
+        bd=0,
+        activebackground="#5678A9",
+    ).place(x=35, y=664)
+
+
+
+
+home_page_function()
 
 mainloop()
