@@ -15,6 +15,9 @@ entry_frame = LabelFrame(home_page)
 customers_frame = LabelFrame(home_page)
 inventory_frame = LabelFrame(home_page)
 
+upper_limit = 10
+lower_limit = 1
+
 
 def register_page_function():
     """ register page function"""
@@ -176,7 +179,7 @@ def register_page_function():
                       purchase_avg integer,
                       sales_avg integer
             )"""
-                    )
+            )
 
             c.execute(
                 """ CREATE TABLE transaction_history(
@@ -190,7 +193,7 @@ def register_page_function():
             transaction_price integer,
             customer_txn text
             )"""
-                    )
+            )
 
             c.execute(
                 """CREATE TABLE customers(
@@ -202,7 +205,7 @@ def register_page_function():
             customer_contact integer,
             customer_volume integer
             )"""
-                    )
+            )
             b.commit()
             b.close()
 
@@ -536,7 +539,7 @@ def analytics_function():
 
 def customers_function():
     global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
-    global sign_out_img, add_customer, remove_customer, add_c_window
+    global sign_out_img, add_customer, remove_customer, add_c_window, sb_frame, canvas_display, cust_details_label
 
     home_page = LabelFrame(root)
     home_page.destroy()
@@ -609,20 +612,31 @@ def customers_function():
     b = c.cursor()
     b.execute("SELECT * FROM customers")
     d = b.fetchall()
-    upper_limit = 10
-    lower_limit = 0
-    for details in range(lower_limit, upper_limit):
-        place_location = 250
+    cust_details_label = LabelFrame(home_page, bg="#5678A9").place(x=292, y=206)
+    canvas_display = Canvas(cust_details_label, bg="#5678A9")
+    canvas_display.place(x=292, y=206, width=956, height=476)
+    sb = Scrollbar(cust_details_label, orient=VERTICAL, command=canvas_display.yview)
+    sb.place(relx=1, rely=0, relheight=1, anchor='ne')
+    canvas_display.configure(yscrollcommand=sb.set)
+    canvas_display.bind('<Configure>', lambda e: canvas_display.configure(scrollregion=canvas_display.bbox("all")))
+    sb_frame = Frame(canvas_display)
+    sb_frame.config(bg="#5678A9")
+    canvas_display.create_window((0, 0), height=(len(d)*30+11), width=966, window=sb_frame)
+    canvas_display.config(bg='#5678A9')
+
+    for details in range(1, len(d)):
+        place_location = 10
         print(details)
         for detail_number in d:
-            Label(home_page, text=detail_number[1], bg="#5678A9", font=10).place(x=290, y=place_location)
-            Label(home_page, text=detail_number[0], bg="#5678A9", font=10).place(x=370, y=place_location)
-            Label(home_page, text=detail_number[2], bg="#5678A9", font=10).place(x=500, y=place_location)
-            Label(home_page, text=detail_number[3], bg="#5678A9", font=10).place(x=600, y=place_location)
-            Label(home_page, text=detail_number[4], bg="#5678A9", font=10).place(x=650, y=place_location)
-            Label(home_page, text=detail_number[5], bg="#5678A9", font=10).place(x=900, y=place_location)
-            Label(home_page, text=detail_number[6], bg="#5678A9", font=10).place(x=900, y=place_location)
-            place_location += 50
+            Label(sb_frame, text=detail_number[1], bg="#5678A9", font=10).place(x=10, y=place_location)
+            Label(sb_frame, text=detail_number[0], bg="#5678A9", font=10).place(x=90, y=place_location)
+            Label(sb_frame, text=detail_number[2], bg="#5678A9", font=10).place(x=280, y=place_location)
+            Label(sb_frame, text=detail_number[3], bg="#5678A9", font=10).place(x=410, y=place_location)
+            Label(sb_frame, text=detail_number[5], bg="#5678A9", font=10).place(x=610, y=place_location)
+            Label(sb_frame, text=detail_number[4], bg="#5678A9", font=10).place(x=750, y=place_location)
+            Label(sb_frame, text=detail_number[6], bg="#5678A9", font=10).place(x=890, y=place_location)
+            place_location += 30
+
 
 
 def entry_function():
@@ -690,7 +704,7 @@ def entry_function():
     item_add_entry.place(x=830, y=228)
     item_remove_entry.place(x=830, y=414)
     transaction_code_entry.place(x=830, y=597)
-    
+
     Button(
         home_page,
         image=analytics_img,
@@ -739,6 +753,7 @@ def entry_function():
         bd=0,
         activebackground="#5678A9",
     ).place(x=35, y=664)
+
 
 def inventory_function():
     global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
@@ -951,20 +966,21 @@ def add_customer_mbox():
             customer_code_reg = "%s%s%s%s%s%s" % (e.year, e.month, e.day, e.hour, e.minute, e.second)
             Label(home_page, image=c_add_success1, bg="#5678A9").place(x=589, y=549)
             c.execute(
-                 "INSERT INTO customers VALUES(:customer_code, :customer_name, :customer_organization, :customer_email,\
-                :customer_contact, :customer_volume)",
+                "INSERT INTO customers VALUES(:customer_code, :customer_name, :customer_organization, :customer_email,\
+                :customer_address, :customer_contact, :customer_volume)",
                 {
-                   "customer_code": customer_code_reg,
-                   "customer_name": name_c_reg.get(),
-                   "customer_organization": organization_c_reg.get(),
-                   "customer_email": email_c_reg.get(),
-                   "customer_address": address_c_reg.get(),
-                   "customer_contact": number_c_reg.get(),
-                   "customer_volume": 0,
+                    "customer_code": customer_code_reg,
+                    "customer_name": name_c_reg.get(),
+                    "customer_organization": organization_c_reg.get(),
+                    "customer_email": email_c_reg.get(),
+                    "customer_address": address_c_reg.get(),
+                    "customer_contact": number_c_reg.get(),
+                    "customer_volume": 0,
                 },
-                )
+            )
             b.commit()
             b.close()
+
     Button(
         home_page, image=add_button, bg="#5678A9", bd=0, activebackground="#5678A9", command=add_b_click
     ).place(x=710, y=535)
