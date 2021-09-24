@@ -197,7 +197,7 @@ def register_page_function():
 
             c.execute(
                 """CREATE TABLE customers(
-            customer_code integer,
+            customer_code integer PRIMARY KEY,
             customer_name text,
             customer_organization text,
             customer_email text,
@@ -1053,9 +1053,10 @@ def add_customer_mbox():
 def remove_customer_mbox():
     global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
     global sign_out_img, add_customer, remove_customer, add_c_window, remove_c_window, remove_button
-
+    global remove_success_img,  remove_error_img
     home_page = LabelFrame(root)
     home_page.destroy()
+
 
     home_page = LabelFrame(root).place(x=0, y=0)
     home_page_image = PhotoImage(file="Images/customers_page.png")
@@ -1069,11 +1070,30 @@ def remove_customer_mbox():
     remove_c_window = PhotoImage(file="Images/remove_customer_window.png")
 
     def remove_c_click():
-        pass
+        global remove_success_img, remove_error_img
+        b = sqlite3.connect(f"databases/{current_sign_in}.db")
+        print(current_sign_in)
+        c = b.cursor()
+        c.execute("SELECT * FROM customers")
+        existing_customers = c.fetchall()
+        found = False
+        remove_success_img = PhotoImage(file="Images/c_removed_label.png")
+        remove_error_img = PhotoImage(file="Images/c_not_found_label.png")
+        for customerss in existing_customers:
+            print(customerss[0])
+            if customerss[0] == remove_c_code.get():
+                found = True
+                c.execute(f"DELETE  from customers WHERE customer_code='{remove_c_code.get()}'")
+                b.commit()
+                Label(home_page, image=remove_success_img, bg="#5678A9").place(x=791,y=272)
+                print("delete successful")
+        if found == False:
+            print("code not found")
+            Label(home_page, image=remove_error_img, bg="#5678A9").place(x=584, y=272)
 
     Label(home_page, image=remove_c_window).place(x=573, y=198)
 
-    remove_c_code = StringVar()
+    remove_c_code = IntVar()
 
     code_entry = Entry(
         home_page, text=remove_c_code, bg="#5A67A8", bd=0, font=8, width=21
