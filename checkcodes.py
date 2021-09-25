@@ -13,16 +13,10 @@ print ("The time is now: = %s:%s:%s" % (e.hour, e.minute, e.second))
 print("transaction ID: ' %s%s%s%s%s%s" % (e.year, e.month, e.day, e.hour, e.minute, e.second))
 
 
-c = sqlite3.connect("databases/23.db")
-a = c.cursor()
-a.execute("SELECT * FROM customers")
-c_data = a.fetchall()
-print(c_data)
-j = c_data[0]
-print(j)
-print(j[0])
-#c.execute("DELETE from customers WHERE customer_code='202192402658'")
-c.commit()
-c.close()
+user_file = sqlite3.connect('databases/21.db')
+c = user_file.cursor()
+c.execute("SELECT * from inventory")
+d = c.fetchall()
+print(d)
 
 
