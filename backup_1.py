@@ -167,26 +167,26 @@ def register_page_function():
             b = sqlite3.connect(f"databases/{username_register.get()}.db")
             c = b.cursor()
             c.execute(
-                    """ CREATE TABLE inventory(
+            """ CREATE TABLE inventory(
                       item_code integer PRIMARY KEY,
                       item_name text,
                       remaining_qty integer,
                       sold_qty integer,
-                      purchase_qty integer
-                    )"""
-            )
+                      purchase_qty
+                    )""",
+                    )
             c.execute(
                     """ CREATE TABLE transaction_history(
                         transaction_id integer PRIMARY KEY,
                         item_name text,
-                        transaction_qty,
+                        transaction_qty
                         transaction_type text,
-                        customer_txn text,
+                        customer_txn text
                         transaction_price integer,
                         transaction_date integer,
-                        transaction_vol integer
-                    )"""
-            )
+                        transaction_vol integer,
+                    )""",
+                    )
 
             c.execute(
                     """CREATE TABLE customers(
@@ -197,8 +197,8 @@ def register_page_function():
                         customer_address text,
                         customer_contact integer,
                         customer_volume integer
-                    )"""
-            )
+                    )""",
+                    )
 
             c.execute(
                     """CREATE TABLE volume_profile(
@@ -206,8 +206,8 @@ def register_page_function():
                         sell_volume integer,
                         buy_qty integer,
                         sell_qty integer
-                    )"""
-            )
+                    )""",
+                    )
             b.commit()
             b.close()
 
@@ -328,13 +328,14 @@ def sign_in_page_function():
             password_rec = records[1]
 
             if username_rec == encrypt(
-                username_signin.get(), K
+                    username_signin.get(), K
             ) and password_rec == encrypt(password_signin.get(), K):
                 valid_sign_in = True
                 current_sign_in = username_signin.get()
 
+
             elif username_rec == encrypt(
-                username_signin.get(), K
+                    username_signin.get(), K
             ) and password_rec != encrypt(password_signin.get(), K):
                 password_not_matched = True
 
@@ -555,20 +556,10 @@ def customers_function():
     add_c_window = PhotoImage(file="Images/add_customer_window.png")
 
     Button(
-        home_page,
-        image=add_customer,
-        bg="#5678A9",
-        bd=0,
-        activebackground="#5678A9",
-        command=add_customer_mbox,
+        home_page, image=add_customer, bg="#5678A9", bd=0, activebackground="#5678A9", command=add_customer_mbox
     ).place(x=927, y=96)
     Button(
-        home_page,
-        image=remove_customer,
-        bg="#5678A9",
-        bd=0,
-        activebackground="#5678A9",
-        command=remove_customer_mbox,
+        home_page, image=remove_customer, bg="#5678A9", bd=0, activebackground="#5678A9", command=remove_customer_mbox
     ).place(x=310, y=96)
     Button(
         home_page,
@@ -635,32 +626,17 @@ def customers_function():
     canvas_display.create_window((0, 0), height=(len(d)*30+11), width=966, window=sb_frame)
     canvas_display.config(bg='#5678A9')
 
-
     for details in range(1, len(d)):
         place_location = 10
         print(details)
         for detail_number in d:
-            Label(sb_frame, text=detail_number[1], bg="#5678A9", font=10).place(
-                x=10, y=place_location
-            )
-            Label(sb_frame, text=detail_number[0], bg="#5678A9", font=10).place(
-                x=90, y=place_location
-            )
-            Label(sb_frame, text=detail_number[2], bg="#5678A9", font=10).place(
-                x=280, y=place_location
-            )
-            Label(sb_frame, text=detail_number[3], bg="#5678A9", font=10).place(
-                x=410, y=place_location
-            )
-            Label(sb_frame, text=detail_number[5], bg="#5678A9", font=10).place(
-                x=610, y=place_location
-            )
-            Label(sb_frame, text=detail_number[4], bg="#5678A9", font=10).place(
-                x=750, y=place_location
-            )
-            Label(sb_frame, text=detail_number[6], bg="#5678A9", font=10).place(
-                x=890, y=place_location
-            )
+            Label(sb_frame, text=detail_number[1], bg="#5678A9", font=10).place(x=10, y=place_location)
+            Label(sb_frame, text=detail_number[0], bg="#5678A9", font=10).place(x=90, y=place_location)
+            Label(sb_frame, text=detail_number[2], bg="#5678A9", font=10).place(x=280, y=place_location)
+            Label(sb_frame, text=detail_number[3], bg="#5678A9", font=10).place(x=410, y=place_location)
+            Label(sb_frame, text=detail_number[5], bg="#5678A9", font=10).place(x=610, y=place_location)
+            Label(sb_frame, text=detail_number[4], bg="#5678A9", font=10).place(x=750, y=place_location)
+            Label(sb_frame, text=detail_number[6], bg="#5678A9", font=10).place(x=890, y=place_location)
             place_location += 30
 
 
@@ -678,6 +654,7 @@ def entry_function():
     entry_details = PhotoImage(file="Images/entry_page_img.png")
     Label(home_page, image=entry_details).place(x=-1, y=-1)
 
+
     user_file = sqlite3.connect(f"databases/{current_sign_in}.db")
     curs = user_file.cursor()
     curs.execute("SELECT * FROM customers")
@@ -687,14 +664,12 @@ def entry_function():
         current_cust = num[1]
         customer_name_list.append(f"{current_cust}")
         print(customer_name_list)
-    item_list = [
-        "other",
-    ]
+    item_list = ["other",]
     curs.execute("SELECT * FROM inventory")
     item_details_list = curs.fetchall()
     for itemss in item_details_list:
         curr_entry = itemss[1]
-        item_list.append(f"{curr_entry}")
+        item_list.append(f'{curr_entry}')
 
     item_name_entry = StringVar()
     quantity_entry = IntVar()
@@ -707,23 +682,18 @@ def entry_function():
     dd_type.set("Buy")
     type_options = ["Buy", "Sell"]
     drop = OptionMenu(home_page, dd_type, *type_options)
-    drop.config(
-        bg="#5A67A8", activebackground="#5A67A8", width=45, borderwidth=0, height=1
-    )
+    drop.config(bg="#5A67A8", activebackground="#5A67A8", width=45, borderwidth=0, height=1)
     drop.place(x=344, y=381)
 
     customer_options = OptionMenu(home_page, customer_entry, *customer_name_list)
     customer_entry.set("none")
-    customer_options.config(
-        bg="#5A67A8", activebackground="#5A67A8", width=45, borderwidth=0, height=1
-    )
+    customer_options.config(bg="#5A67A8", activebackground="#5A67A8", width=45, borderwidth=0, height=1)
     customer_options.place(x=340, y=460)
 
     item_name_options = OptionMenu(home_page, item_name_entry, *item_list)
-    item_name_options.config(
-        bg="#5A67A8", activebackground="#5A67A8", width=45, borderwidth=0, height=1
-    )
+    item_name_options.config(bg="#5A67A8", activebackground="#5A67A8", width=45, borderwidth=0, height=1)
     item_name_options.place(x=340, y=212)
+
 
     quantity_entry = Entry(
         home_page, text=quantity_entry, bg="#5A67A8", bd=0, font=8, width=21
@@ -752,22 +722,15 @@ def entry_function():
 
     add_transaction_button = PhotoImage(file="Images/add_transaction_button.png")
     add_button = PhotoImage(file="Images/add_button.png")
-    remove_button = PhotoImage(file="Images/remove_button.png")
+    remove_button = PhotoImage(file= "Images/remove_button.png")
 
     def add_transaction_click():
         user_file = sqlite3.connect(f"databases/{current_sign_in}.db")
         c = user_file.cursor()
         e = datetime.datetime.now()
-        transaction_id_entry = "%s%s%s%s%s%s" % (
-            e.year,
-            e.month,
-            e.day,
-            e.hour,
-            e.minute,
-            e.second,
-        )
+        transaction_id_entry = "%s%s%s%s%s%s" % (e.year, e.month, e.day, e.hour, e.minute, e.second)
         today_date = "%s-%s-%s" % (e.year, e.month, e.day)
-        txn_volume = int(price_per_unit_entry.get()) * int(quantity_entry.get())
+        txn_volume = price_per_unit_entry.get() * quantity_entry.get()
         c.execute(
             "INSERT INTO transaction_history VALUES(:transaction_id, :item_name, :transaction_qty, \
             :transaction_type, :customer_txn, :transaction_price, :transaction_date, :transaction_vol)",
@@ -777,16 +740,14 @@ def entry_function():
                 "transaction_qty": quantity_entry.get(),
                 "transaction_type": dd_type.get(),
                 "customer_txn": customer_entry.get(),
-                "transaction_price": price_per_unit_entry.get(),
                 "transaction_date": today_date,
-                "transaction_vol": txn_volume,
+                "transaction_vol": txn_volume
             },
         )
-        user_file.commit()
-        c.execute(f"SELECT * FROM customers WHERE customer_name='{customer_entry.get()}'")
-        existing_datas = c.fetchall()
-        print(existing_datas)
-        existing_data = existing_datas[0]
+        c.execute(
+            f"SELECT FROM customers WHERE :customername='{customer_entry.get()}'"
+        )
+        existing_data = c.fetchall()
         data_0 = existing_data[0]
         data_1 = existing_data[1]
         data_2 = existing_data[2]
@@ -795,7 +756,9 @@ def entry_function():
         data_5 = existing_data[5]
         data_6 = existing_data[6]
         updated_data = data_6 + txn_volume
-        c.execute(f"DELETE FROM customers WHERE customer_name='{customer_entry.get()}'")
+        c.execute(
+            f"DELETE FROM customers WHERE :customername={customer_entry.get()}"
+        )
 
         user_file.commit()
 
@@ -813,71 +776,72 @@ def entry_function():
             },
         )
         user_file.commit()
-        c.execute(f"SELECT * FROM inventory WHERE item_name='{item_name_entry.get()}'")
-        existing_item_stats = c.fetchall()
-        existing_item_stat = existing_item_stats[0]
+        c.execute(
+            f"SELECT FROM inventory WHERE item_name ={item_name_entry.get()}"
+        )
+        existing_item_stat = c.fetchall()
         dataa_0 = existing_item_stat[0]
         dataa_1 = existing_item_stat[1]
-        dataa_2 = int(existing_item_stat[2])
-        dataa_3 = int(existing_item_stat[3])
-        dataa_4 = int(existing_item_stat[4])
-        c.execute(f"DELETE FROM inventory WHERE item_name ='{item_name_entry.get()}'")
+        dataa_2 = existing_item_stat[2]
+        dataa_3 = existing_item_stat[3]
+        dataa_4 = existing_item_stat[4]
+        c.execute(
+            f"DELETE FROM inventory WHERE item_name ={item_name_entry.get()}"
+        )
         user_file.commit()
         if dd_type.get() == "Buy":
-            dataa_2 += int(quantity_entry.get())
-            dataa_4 += int(quantity_entry.get())
+            dataa_2 += quantity_entry.get()
+            dataa_4 += quantity_entry.get()
         elif dd_type.get() == "Sell":
-            dataa_2 -= int(quantity_entry.get())
-            dataa_3 += int(quantity_entry.get())
+            dataa_2 -= quantity_entry.get()
+            dataa_3 += quantity_entry.get()
         c.execute(
             "INSERT INTO inventory VALUES(:item_code, :item_name, :remaining_qty, :sold_qty, :purchase_qty)",
             {
                 "item_code": dataa_0,
                 "item_name": dataa_1,
                 "remaining_qty": dataa_2,
-                "sold_qty": dataa_3,
-                "purchase_qty": dataa_4,
+                "sold qty": dataa_3,
+                "purchase_qty": dataa_4
             },
         )
         user_file.commit()
 
-        c.execute("SELECT * FROM volume_profile")
-        vol_r = c.fetchall()
-        vol_p = vol_r[0]
+        c.execute(
+            "SELECT * FROM volume_profile"
+        )
+        vol_l = c.fetchall()
+        vol_p = vol_l[0]
         vol_0 = vol_p[0]
         vol_1 = vol_p[1]
         vol_2 = vol_p[2]
         vol_3 = vol_p[3]
         if dd_type.get() == "Buy":
             vol_0 += txn_volume
-            vol_2 += int(quantity_entry.get())
+            vol_2 += quantity_entry.get()
         elif dd_type.get() == "Sell":
             vol_1 += txn_volume
-            vol_3 += int(quantity_entry.get())
-        c.execute("DELETE  FROM volume_profile")
+            vol_3 += quantity_entry.get()
+        c.execute(
+            "DELETE * FROM volume_profile"
+        )
         user_file.commit()
 
         c.execute(
             "INSERT INTO volume_profile VALUES(:buy_volume, :sell_volume, :buy_qty, :sell_qty)",
             {
-                "buy_volume": vol_0,
+                "buy_volume":vol_0,
                 "sell_volume": vol_1,
                 "buy_qty": vol_2,
-                "sell_qty": vol_3,
-            },
+                "sell_qty": vol_3
+
+            }
         )
-        user_file.commit()
+
 
     def add_item_click():
         e = datetime.datetime.now()
-        item_code_entry = "%s%s%s%s%s%s" % (
-            e.year,
-            e.month,
-            e.day,
-            e.hour,
-            e.minute,
-            e.second,
-        )
+        item_code_entry = "%s%s%s%s%s%s" % (e.year, e.month, e.day, e.hour, e.minute, e.second)
         user_info = sqlite3.connect(f"databases/{current_sign_in}.db")
         c = user_info.cursor()
         c.execute(
@@ -886,11 +850,10 @@ def entry_function():
                 "item_code": item_code_entry,
                 "item_name": item_add_entry.get(),
                 "remaining_qty": 0,
-                "sold_qty": 0,
-                "purchase_qty": 0,
+                "sold qty": 0,
+                "purchase_qty": 0
             },
         )
-        user_info.commit()
 
     def remove_transaction_click():
         pass
@@ -1138,7 +1101,9 @@ def add_customer_mbox():
     number_c_reg = StringVar()
     address_c_reg = StringVar()
 
-    name_entry = Entry(home_page, text=name_c_reg, bg="#5A67A8", bd=0, font=8, width=21)
+    name_entry = Entry(
+        home_page, text=name_c_reg, bg="#5A67A8", bd=0, font=8, width=21
+    )
     organization_entry = Entry(
         home_page, text=organization_c_reg, bg="#5A67A8", bd=0, font=6, width=21
     )
@@ -1165,12 +1130,8 @@ def add_customer_mbox():
     def add_b_click():
         global c_add_success1, c_add_error2, c_add_error3, i
         c_add_success1 = PhotoImage(file="Images/Customer added successfully.png")
-        c_add_error2 = PhotoImage(
-            file="Images/Customer with this email already exists.png"
-        )
-        c_add_error3 = PhotoImage(
-            file="Images/Customer with this number already exists.png"
-        )
+        c_add_error2 = PhotoImage(file="Images/Customer with this email already exists.png")
+        c_add_error3 = PhotoImage(file="Images/Customer with this number already exists.png")
 
         b = sqlite3.connect(f"databases/{current_sign_in}.db")
         print(current_sign_in)
@@ -1190,14 +1151,7 @@ def add_customer_mbox():
 
         if valid1 == True and valid2 == True:
             e = datetime.datetime.now()
-            customer_code_reg = "%s%s%s%s%s%s" % (
-                e.year,
-                e.month,
-                e.day,
-                e.hour,
-                e.minute,
-                e.second,
-            )
+            customer_code_reg = "%s%s%s%s%s%s" % (e.year, e.month, e.day, e.hour, e.minute, e.second)
             Label(home_page, image=c_add_success1, bg="#5678A9").place(x=589, y=549)
             c.execute(
                 "INSERT INTO customers VALUES(:customer_code, :customer_name, :customer_organization, :customer_email,\
@@ -1216,28 +1170,13 @@ def add_customer_mbox():
             b.close()
 
     Button(
-        home_page,
-        image=add_button,
-        bg="#5678A9",
-        bd=0,
-        activebackground="#5678A9",
-        command=add_b_click,
+        home_page, image=add_button, bg="#5678A9", bd=0, activebackground="#5678A9", command=add_b_click
     ).place(x=710, y=535)
     Button(
-        home_page,
-        image=add_customer,
-        bg="#5678A9",
-        bd=0,
-        activebackground="#5678A9",
-        command=add_customer_mbox,
+        home_page, image=add_customer, bg="#5678A9", bd=0, activebackground="#5678A9", command=add_customer_mbox
     ).place(x=927, y=96)
     Button(
-        home_page,
-        image=remove_customer,
-        bg="#5678A9",
-        bd=0,
-        activebackground="#5678A9",
-        command=remove_customer_mbox,
+        home_page, image=remove_customer, bg="#5678A9", bd=0, activebackground="#5678A9", command=remove_customer_mbox
     ).place(x=310, y=96)
     Button(
         home_page,
@@ -1292,9 +1231,10 @@ def add_customer_mbox():
 def remove_customer_mbox():
     global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
     global sign_out_img, add_customer, remove_customer, add_c_window, remove_c_window, remove_button
-    global remove_success_img, remove_error_img
+    global remove_success_img,  remove_error_img
     home_page = LabelFrame(root)
     home_page.destroy()
+
 
     home_page = LabelFrame(root).place(x=0, y=0)
     home_page_image = PhotoImage(file="Images/customers_page.png")
@@ -1321,13 +1261,9 @@ def remove_customer_mbox():
             print(customerss[0])
             if customerss[0] == remove_c_code.get():
                 found = True
-                c.execute(
-                    f"DELETE  from customers WHERE customer_code='{remove_c_code.get()}'"
-                )
+                c.execute(f"DELETE  from customers WHERE customer_code='{remove_c_code.get()}'")
                 b.commit()
-                Label(home_page, image=remove_success_img, bg="#5678A9").place(
-                    x=791, y=272
-                )
+                Label(home_page, image=remove_success_img, bg="#5678A9").place(x=791,y=272)
                 print("delete successful")
         if found == False:
             print("code not found")
@@ -1343,20 +1279,10 @@ def remove_customer_mbox():
     code_entry.place(x=606, y=238)
 
     Button(
-        home_page,
-        image=remove_button,
-        bg="#5678A9",
-        bd=0,
-        activebackground="#5678A9",
-        command=remove_c_click,
+        home_page, image=remove_button, bg="#5678A9", bd=0, activebackground="#5678A9", command=remove_c_click
     ).place(x=696, y=275)
     Button(
-        home_page,
-        image=add_customer,
-        bg="#5678A9",
-        bd=0,
-        activebackground="#5678A9",
-        command=add_customer_mbox,
+        home_page, image=add_customer, bg="#5678A9", bd=0, activebackground="#5678A9", command=add_customer_mbox
     ).place(x=927, y=96)
     Button(
         home_page,
