@@ -209,6 +209,16 @@ def register_page_function():
                     )"""
             )
             b.commit()
+            c.execute(
+                "INSERT INTO volume_profile VALUES(:buy_volume, :sell_volume, :buy_qty, :sell_qty)",
+                {
+                    "buy_volume": 0,
+                    "sell_volume": 0,
+                    "buy_qty": 0,
+                    "sell_qty": 0,
+                },
+            )
+            b.commit()
             b.close()
 
     def back_btnnm():
@@ -488,6 +498,37 @@ def analytics_function():
 
     Label(home_page, image=home_page_image).place(x=-1, y=-1)
 
+    s = sqlite3.connect(f'databases/{current_sign_in}.db')
+    c = s.cursor()
+    c.execute(
+        "SELECT * FROM volume_profile"
+    )
+    g = c.fetchall()
+    h = g[0]
+    print(h)
+    f = h[0] + h[1]
+    if f == 0:
+        f +=1
+    angle_f = (360 * h[0]) / f
+    angle_g = (360 * h[1]) / f
+    canvas = Canvas(home_page, width=190, height=185, bg="#5678A9", highlightthickness=0)
+    canvas.place(x=511, y=206)
+    canvas.create_arc((0, 0, 190, 185), fill="#ff0000", outline="#ff0000", start=0, extent=angle_f)
+    canvas.create_arc((0, 0, 190, 185), fill="#00ff00", outline="#00ff00", start=angle_f, extent=angle_g)
+
+    if h[2] == 0:
+        h[2] = 1
+    h_3 = h[3]-h[2]
+    f_1 = h[2] + h[3] + h_3
+    angle_f_1 = (60 * h[2]) / f_1
+    angle_g_1 = (360 * h[3]) / f_1
+    angle_h_1 = (360 * h_3) / f_1
+    canvas = Canvas(home_page, width=190, height=186, bg="#5678A9", highlightthickness=0)
+    canvas.place(x=511, y=477)
+    canvas.create_arc((0, 0, 190, 185), fill="#ff0000", outline="#ff0000", start=0, extent=angle_f_1)
+    canvas.create_arc((0, 0, 190, 185), fill="#00ff00", outline="#00ff00", start=angle_f_1, extent=angle_g_1)
+    canvas.create_arc((0, 0, 190, 185), fill="#0000ff", outline="#0000ff", start=(angle_g_1+angle_f_1),
+                      extent=angle_h_1)
     Button(
         home_page,
         image=analytics_img,
@@ -659,14 +700,14 @@ def customers_function():
                 x=750, y=place_location
             )
             Label(sb_frame, text=detail_number[6], bg="#5678A9", font=10).place(
-                x=890, y=place_location
+                x=875, y=place_location
             )
             place_location += 30
 
 
 def entry_function():
     global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
-    global sign_out_img, entry_details, add_transaction_button, add_button, remove_button
+    global sign_out_img, entry_details, add_transaction_button, add_button, remove_button, error_img, success_img
 
     home_page = LabelFrame(root)
     home_page.destroy()
@@ -740,7 +781,7 @@ def entry_function():
         home_page, text=item_remove_entry, bg="#5A67A8", bd=0, font=8, width=21
     )
 
-    transaction_code_entry = Entry(
+    transaction_code_remove_entry = Entry(
         home_page, text=transaction_code_entry, bg="#5A67A8", bd=0, font=8, width=21
     )
 
@@ -748,7 +789,7 @@ def entry_function():
     price_per_unit_entry.place(x=340, y=548)
     item_add_entry.place(x=830, y=228)
     item_remove_entry.place(x=830, y=414)
-    transaction_code_entry.place(x=830, y=597)
+    transaction_code_remove_entry.place(x=830, y=597)
 
     add_transaction_button = PhotoImage(file="Images/add_transaction_button.png")
     add_button = PhotoImage(file="Images/add_button.png")
@@ -893,10 +934,27 @@ def entry_function():
         user_info.commit()
 
     def remove_transaction_click():
-        pass
+        global success_img
+        success_img = PhotoImage(file="Images/success_label.png")
+        user_file = sqlite3.connect(f"databases/{current_sign_in}.db")
+        c = user_file.cursor()
+        c.execute(
+            f"DELETE FROM transaction_history WHERE transaction_id={transaction_code_entry.get()}"
+        )
+        user_file.commit()
+        Label(home_page, image=success_img, bg="#5678A9").place(x=1118, y=630)
+
 
     def remove_item_click():
-        pass
+        global success_img
+        success_img = PhotoImage(file="Images/success_label.png")
+        user_file = sqlite3.connect(f"databases/{current_sign_in}.db")
+        c = user_file.cursor()
+        c.execute(
+            f"DELETE FROM inventory WHERE item_name='{item_remove_entry.get()}'"
+        )
+        user_file.commit()
+        Label(home_page, image=success_img, bg="#5678A9").place(x=1108, y=453)
 
     Button(
         home_page,
@@ -1042,6 +1100,43 @@ def inventory_function():
         activebackground="#5678A9",
     ).place(x=35, y=664)
 
+    c = sqlite3.connect(f"databases/{current_sign_in}.db")
+    b = c.cursor()
+    b.execute("SELECT * FROM inventory")
+    d = b.fetchall()
+    item_details_label = LabelFrame(home_page, bg="#5678A9").place(x=292, y=206)
+    canvas_display = Canvas(item_details_label, bg="#5678A9")
+    canvas_display.place(x=292, y=206, width=956, height=476)
+    sb = Scrollbar(item_details_label, orient=VERTICAL, command=canvas_display.yview)
+    sb.place(relx=1, rely=0, relheight=1, anchor='ne')
+    canvas_display.configure(yscrollcommand=sb.set)
+    canvas_display.bind('<Configure>', lambda e: canvas_display.configure(scrollregion=canvas_display.bbox("all")))
+    sb_frame = Frame(canvas_display)
+    sb_frame.config(bg="#5678A9")
+    canvas_display.create_window((0, 0), height=(len(d) * 30 + 11), width=966, window=sb_frame)
+    canvas_display.config(bg='#5678A9')
+
+    for details in range(1, len(d)):
+        place_location = 10
+        print(details)
+        for detail_number in d:
+            Label(sb_frame, text=detail_number[0], bg="#5678A9", font=10).place(
+                x=10, y=place_location
+            )
+            Label(sb_frame, text=detail_number[1], bg="#5678A9", font=10).place(
+                x=190, y=place_location
+            )
+            Label(sb_frame, text=detail_number[2], bg="#5678A9", font=10).place(
+                x=380, y=place_location
+            )
+            Label(sb_frame, text=detail_number[4], bg="#5678A9", font=10).place(
+                x=650, y=place_location
+            )
+            Label(sb_frame, text=detail_number[3], bg="#5678A9", font=10).place(
+                x=830, y=place_location
+            )
+            place_location += 30
+
 
 def transactions_function():
     global home_page_image
@@ -1053,12 +1148,55 @@ def transactions_function():
 
     home_page = LabelFrame(root).place(x=0, y=0)
 
-    home_page_image = PhotoImage(file="Images/homepage.png")
+    home_page_image = PhotoImage(file="Images/transaction_hisotry_page_img.png")
 
     Label(home_page, image=home_page_image).place(x=-1, y=-1)
 
-    transactions_frame = LabelFrame(home_page).place(x=265, y=88)
-    Label(transactions_frame, image=transactions_img, bg="#000000").place(x=650, y=106)
+    c = sqlite3.connect(f"databases/{current_sign_in}.db")
+    b = c.cursor()
+    b.execute("SELECT * FROM transaction_history")
+    d = b.fetchall()
+    txn_details_label = LabelFrame(home_page, bg="#5678A9").place(x=292, y=206)
+    canvas_display = Canvas(txn_details_label, bg="#5678A9")
+    canvas_display.place(x=292, y=206, width=956, height=476)
+    sb = Scrollbar(txn_details_label, orient=VERTICAL, command=canvas_display.yview)
+    sb.place(relx=1, rely=0, relheight=1, anchor='ne')
+    canvas_display.configure(yscrollcommand=sb.set)
+    canvas_display.bind('<Configure>', lambda e: canvas_display.configure(scrollregion=canvas_display.bbox("all")))
+    sb_frame = Frame(canvas_display)
+    sb_frame.config(bg="#5678A9")
+    canvas_display.create_window((0, 0), height=(len(d)*30+11), width=966, window=sb_frame)
+    canvas_display.config(bg='#5678A9')
+
+    for details in range(1, len(d)):
+        place_location = 10
+        print(details)
+        for detail_number in d:
+            Label(sb_frame, text=detail_number[0], bg="#5678A9", font=10).place(
+                x=10, y=place_location
+            )
+            Label(sb_frame, text=detail_number[1], bg="#5678A9", font=10).place(
+                x=180, y=place_location
+            )
+            Label(sb_frame, text=detail_number[2], bg="#5678A9", font=10).place(
+                x=280, y=place_location
+            )
+            Label(sb_frame, text=detail_number[5], bg="#5678A9", font=10).place(
+                x=350, y=place_location
+            )
+            Label(sb_frame, text=detail_number[4], bg="#5678A9", font=10).place(
+                x=680, y=place_location
+            )
+            Label(sb_frame, text=detail_number[3], bg="#5678A9", font=10).place(
+                x=580, y=place_location
+            )
+            Label(sb_frame, text=detail_number[7], bg="#5678A9", font=10).place(
+                x=460, y=place_location
+            )
+            Label(sb_frame, text=detail_number[6], bg="#5678A9", font=10).place(
+                x=845, y=place_location
+            )
+            place_location += 30
 
     Button(
         home_page,
