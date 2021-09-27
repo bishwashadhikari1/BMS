@@ -4,6 +4,8 @@ import sqlite3
 import datetime
 
 root = Tk()  # creates window
+root.title("BMS")
+root.iconbitmap('images/icon.ico')
 root.geometry("1280x720")
 root.config(bg="#5678A9")
 sign_in_page = LabelFrame(root)
@@ -271,13 +273,13 @@ def sign_in_page_function():
     )
     sign_in_page_background.place(x=-3, y=-3)
 
-    def clear_un_sign_in(event):
+    def clear_un_sign_in():
         """ remove username placeholder after selection"""
 
         if username_signin.get() == "Username":
             username_signin.set("")
 
-    def clear_password_signin(events):
+    def clear_password_signin():
         """ remove password placeholder after selection"""
 
         if password_signin.get() == "Password":
@@ -429,12 +431,6 @@ def home_page_function():
     transactions_img = PhotoImage(file="Images/Transactions.png")
     sign_out_img = PhotoImage(file="Images/Sign Out.png")
 
-    analytics_frame = LabelFrame(home_page)
-    transactions_frame = LabelFrame(home_page)
-    entry_frame = LabelFrame(home_page)
-    customers_frame = LabelFrame(home_page)
-    inventory_frame = LabelFrame(home_page)
-
     Button(
         home_page,
         image=analytics_img,
@@ -486,6 +482,8 @@ def home_page_function():
 
 
 def analytics_function():
+    """go to analytics page for the current customer signed in"""
+
     global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
     global sign_out_img
 
@@ -508,7 +506,7 @@ def analytics_function():
     print(h)
     f = h[0] + h[1]
     if f == 0:
-        f +=1
+        f += 1
     angle_f = (360 * h[0]) / f
     angle_g = (360 * h[1]) / f
     canvas = Canvas(home_page, width=190, height=185, bg="#5678A9", highlightthickness=0)
@@ -518,9 +516,9 @@ def analytics_function():
 
     if h[2] == 0:
         h[2] = 1
-    h_3 = h[3]-h[2]
-    f_1 = h[2] + h[3] + h_3
-    angle_f_1 = (60 * h[2]) / f_1
+    h_3 = h[2]-h[3]
+    f_1 = h[2] * 2
+    angle_f_1 = (360 * h[2]) / f_1
     angle_g_1 = (360 * h[3]) / f_1
     angle_h_1 = (360 * h_3) / f_1
     canvas = Canvas(home_page, width=190, height=186, bg="#5678A9", highlightthickness=0)
@@ -529,6 +527,194 @@ def analytics_function():
     canvas.create_arc((0, 0, 190, 185), fill="#00ff00", outline="#00ff00", start=angle_f_1, extent=angle_g_1)
     canvas.create_arc((0, 0, 190, 185), fill="#0000ff", outline="#0000ff", start=(angle_g_1+angle_f_1),
                       extent=angle_h_1)
+
+    txn_import = sqlite3.connect(f'databases/{current_sign_in}.db')
+    curs = txn_import.cursor()
+    curs.execute(
+        "SELECT * FROM transaction_history"
+    )
+    e = datetime.datetime.now()
+    yearmonth = '%s-%s-' % (e.year, e.month)
+    print(yearmonth[0:7])
+    txn_details_all = curs.fetchall()
+    date_1 = date_2 = date_3 = date_4 = date_5 = date_6 = date_7 = date_9 = date_10 = date_11 = date_12 = date_13 = 0
+    date_14 = date_15 = date_16 = date_17 = date_18 = date_19 = date_20 = date_21 = date_22 = date_23 = date_24 = 0
+    date_25 = date_26 = date_27 = date_28 = date_29 = date_30 = date_31 = date_8 = date_32 = 0
+
+    datee_1 = datee_2 = datee_3 = datee_4 = datee_5 = datee_6 = datee_7 = datee_9 = datee_10 = datee_11 = datee_12 = 0
+    datee_14 = datee_15 = datee_16 = datee_17 = datee_18 = datee_19 = datee_20 = datee_21 = datee_22 = datee_23 = 0
+    datee_24 = 0
+    datee_25 = datee_26 = datee_27 = datee_28 = datee_29 = datee_30 = datee_31 = datee_8 = datee_32 = datee_13 = 0
+
+    for individual_txn in txn_details_all:
+        j = individual_txn[6]
+        if yearmonth[0:7] == j[0:7]:
+            second_last_unit = j[-2:-1]
+            if second_last_unit == '-':
+                date = j[-1]
+            else:
+                date = int(f'{j[-2]}{j[-1]}')
+            if individual_txn[3] == "Buy":
+                if date == 1:
+                    date_1 += individual_txn[7]
+                elif date == 2:
+                    date_2 += individual_txn[7]
+                elif date == 3:
+                    date_3 += individual_txn[7]
+                elif date == 4:
+                    date_4 += individual_txn[7]
+                elif date == 5:
+                    date_5 += individual_txn[7]
+                elif date == 6:
+                    date_6 += individual_txn[7]
+                elif date == 7:
+                    date_7 += individual_txn[7]
+                elif date == 8:
+                    date_8 += individual_txn[7]
+                elif date == 9:
+                    date_9 += individual_txn[7]
+                elif date == 10:
+                    date_10 += individual_txn[7]
+                elif date == 11:
+                    date_11 += individual_txn[7]
+                elif date == 12:
+                    date_12 += individual_txn[7]
+                elif date == 13:
+                    date_13 += individual_txn[7]
+                elif date == 14:
+                    date_14 += individual_txn[7]
+                elif date == 15:
+                    date_15 += individual_txn[7]
+                elif date == 16:
+                    date_16 += individual_txn[7]
+                elif date == 17:
+                    date_17 += individual_txn[7]
+                elif date == 18:
+                    date_18 += individual_txn[7]
+                elif date == 19:
+                    date_19 += individual_txn[7]
+                elif date == 20:
+                    date_20 += individual_txn[7]
+                elif date == 21:
+                    date_21 += individual_txn[7]
+                elif date == 22:
+                    date_22 += individual_txn[7]
+                elif date == 23:
+                    date_23 += individual_txn[7]
+                elif date == 24:
+                    date_24 += individual_txn[7]
+                elif date == 25:
+                    date_25 += individual_txn[7]
+                elif date == 26:
+                    date_26 += individual_txn[7]
+                elif date == 27:
+                    date_27 += individual_txn[7]
+                elif date == 28:
+                    date_28 += individual_txn[7]
+                elif date == 29:
+                    date_29 += individual_txn[7]
+                elif date == 30:
+                    date_30 += individual_txn[7]
+                elif date == 31:
+                    date_31 += individual_txn[7]
+                elif date == 32:
+                    date_32 += individual_txn[7]
+
+            if individual_txn[3] == "Sell":
+                if date == 1:
+                    datee_1 += individual_txn[7]
+                elif date == 2:
+                    datee_2 += individual_txn[7]
+                elif date == 3:
+                    datee_3 += individual_txn[7]
+                elif date == 4:
+                    date_4 += individual_txn[7]
+                elif date == 5:
+                    datee_5 += individual_txn[7]
+                elif date == 6:
+                    datee_6 += individual_txn[7]
+                elif date == 7:
+                    datee_7 += individual_txn[7]
+                elif date == 8:
+                    datee_8 += individual_txn[7]
+                elif date == 9:
+                    datee_9 += individual_txn[7]
+                elif date == 10:
+                    datee_10 += individual_txn[7]
+                elif date == 11:
+                    datee_11 += individual_txn[7]
+                elif date == 12:
+                    datee_12 += individual_txn[7]
+                elif date == 13:
+                    datee_13 += individual_txn[7]
+                elif date == 14:
+                    datee_14 += individual_txn[7]
+                elif date == 15:
+                    datee_15 += individual_txn[7]
+                elif date == 16:
+                    datee_16 += individual_txn[7]
+                elif date == 17:
+                    datee_17 += individual_txn[7]
+                elif date == 18:
+                    datee_18 += individual_txn[7]
+                elif date == 19:
+                    datee_19 += individual_txn[7]
+                elif date == 20:
+                    datee_20 += individual_txn[7]
+                elif date == 21:
+                    datee_21 += individual_txn[7]
+                elif date == 22:
+                    datee_22 += individual_txn[7]
+                elif date == 23:
+                    datee_23 += individual_txn[7]
+                elif date == 24:
+                    datee_24 += individual_txn[7]
+                elif date == 25:
+                    datee_25 += individual_txn[7]
+                elif date == 26:
+                    datee_26 += individual_txn[7]
+                elif date == 27:
+                    datee_27 += individual_txn[7]
+                elif date == 28:
+                    datee_28 += individual_txn[7]
+                elif date == 29:
+                    datee_29 += individual_txn[7]
+                elif date == 30:
+                    datee_30 += individual_txn[7]
+                elif date == 31:
+                    datee_31 += individual_txn[7]
+                elif date == 32:
+                    datee_32 += individual_txn[7]
+    buy_vol_date = [date_1, date_2, date_3, date_4, date_5, date_6, date_7, date_8, date_9, date_10, date_11, date_12,
+                    date_13, date_14, date_14, date_15, date_16, date_17, date_18, date_19, date_20, date_21, date_22,
+                    date_23, date_24, date_25, date_26, date_27, date_28, date_29, date_30, date_31, date_32]
+    sell_vol_date = [datee_1, datee_2, datee_3, datee_4, datee_5, datee_6, datee_7, datee_8, datee_9, datee_10,
+                     datee_11, datee_12, datee_13, datee_14, datee_14, datee_15, datee_16, datee_17, datee_18, datee_19,
+                     datee_20, datee_21, datee_22, datee_23, datee_24, datee_25, datee_26, datee_27, datee_28, datee_29,
+                     datee_30, datee_31, datee_32]
+
+    graph_details_label = LabelFrame(home_page, bg="#5678A9").place(x=843, y=241)
+    canvas_display = Canvas(graph_details_label, bg="#5678A9")
+    canvas_display.place(x=843, y=241, width=345, height=381)
+    canvas_display.config(bg='#5678A9')
+    print(buy_vol_date)
+    print(sell_vol_date)
+    i = 1
+    j = 6
+    for vols in buy_vol_date:
+        if vols <= 1000:
+            vols = 1000
+        canvas_display.create_rectangle(i, 370-(vols/40000), i+2, 370,
+                                        outline="#f00", fill="#f00")
+        i += 10
+
+    for ols in sell_vol_date:
+        if ols <= 1000:
+            ols = 1000
+        canvas_display.create_rectangle(j, 370-(ols/40000), j+2, 370,
+                                        outline="#0f0", fill="#0f0")
+        j += 10
+
     Button(
         home_page,
         image=analytics_img,
@@ -580,6 +766,8 @@ def analytics_function():
 
 
 def customers_function():
+    """ go to customer details page for currently signed in used"""
+
     global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
     global sign_out_img, add_customer, remove_customer, add_c_window, sb_frame, canvas_display, cust_details_label
 
@@ -676,7 +864,6 @@ def customers_function():
     canvas_display.create_window((0, 0), height=(len(d)*30+11), width=966, window=sb_frame)
     canvas_display.config(bg='#5678A9')
 
-
     for details in range(1, len(d)):
         place_location = 10
         print(details)
@@ -706,6 +893,8 @@ def customers_function():
 
 
 def entry_function():
+    """ go to record entry page for current user logged in"""
+
     global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
     global sign_out_img, entry_details, add_transaction_button, add_button, remove_button, error_img, success_img
 
@@ -749,20 +938,20 @@ def entry_function():
     type_options = ["Buy", "Sell"]
     drop = OptionMenu(home_page, dd_type, *type_options)
     drop.config(
-        bg="#5A67A8", activebackground="#5A67A8", width=45, borderwidth=0, height=1
+        bg="#5A67A8", activebackground="#5A67A8", width=45, height=1, highlightthickness=0, borderwidth=0
     )
     drop.place(x=344, y=381)
 
     customer_options = OptionMenu(home_page, customer_entry, *customer_name_list)
     customer_entry.set("none")
     customer_options.config(
-        bg="#5A67A8", activebackground="#5A67A8", width=45, borderwidth=0, height=1
+        bg="#5A67A8", activebackground="#5A67A8", width=45, borderwidth=0, height=1, highlightthickness=0
     )
     customer_options.place(x=340, y=460)
 
     item_name_options = OptionMenu(home_page, item_name_entry, *item_list)
     item_name_options.config(
-        bg="#5A67A8", activebackground="#5A67A8", width=45, borderwidth=0, height=1
+        bg="#5A67A8", activebackground="#5A67A8", width=45, borderwidth=0, height=1, highlightthickness=0
     )
     item_name_options.place(x=340, y=212)
 
@@ -796,6 +985,8 @@ def entry_function():
     remove_button = PhotoImage(file="Images/remove_button.png")
 
     def add_transaction_click():
+        """ adds the stated transaction if eligible and updates all databases"""
+
         user_file = sqlite3.connect(f"databases/{current_sign_in}.db")
         c = user_file.cursor()
         e = datetime.datetime.now()
@@ -910,6 +1101,8 @@ def entry_function():
         user_file.commit()
 
     def add_item_click():
+        """ adds a new item to the inventory list"""
+
         e = datetime.datetime.now()
         item_code_entry = "%s%s%s%s%s%s" % (
             e.year,
@@ -934,6 +1127,8 @@ def entry_function():
         user_info.commit()
 
     def remove_transaction_click():
+        """ removes the transaction details of the transaction id inputted"""
+
         global success_img
         success_img = PhotoImage(file="Images/success_label.png")
         user_file = sqlite3.connect(f"databases/{current_sign_in}.db")
@@ -944,8 +1139,9 @@ def entry_function():
         user_file.commit()
         Label(home_page, image=success_img, bg="#5678A9").place(x=1118, y=630)
 
-
     def remove_item_click():
+        """ deletes a particular item history with it's name"""
+
         global success_img
         success_img = PhotoImage(file="Images/success_label.png")
         user_file = sqlite3.connect(f"databases/{current_sign_in}.db")
@@ -1039,6 +1235,8 @@ def entry_function():
 
 
 def inventory_function():
+    """jumps to inventory page for currently signed in user"""
+
     global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
     global sign_out_img
 
@@ -1139,6 +1337,9 @@ def inventory_function():
 
 
 def transactions_function():
+    """"displays the transaction history of current user who is signed in"""
+
+
     global home_page_image
     global home_page_image, analytics_img, customers_img, entry_img, inventory_img, transactions_img
     global sign_out_img
@@ -1249,10 +1450,13 @@ def transactions_function():
 
 
 def sign_out_function():
+    """takes back to the title page"""
     title_function()
 
 
 def add_customer_mbox():
+    """adds customer after taking inputs"""
+
     global c_add_success1, c_add_error2, c_add_error3
     global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
     global sign_out_img, add_customer, remove_customer, add_c_window, add_button
@@ -1301,6 +1505,7 @@ def add_customer_mbox():
     add_button = PhotoImage(file="Images/add_c_button.png")
 
     def add_b_click():
+        """add customer after eligibility check"""
         global c_add_success1, c_add_error2, c_add_error3, i
         c_add_success1 = PhotoImage(file="Images/Customer added successfully.png")
         c_add_error2 = PhotoImage(
@@ -1326,7 +1531,7 @@ def add_customer_mbox():
                 valid2 = False
                 Label(home_page, image=c_add_error3, bg="#5678A9").place(x=589, y=549)
 
-        if valid1 == True and valid2 == True:
+        if valid1 is True and valid2 is True:
             e = datetime.datetime.now()
             customer_code_reg = "%s%s%s%s%s%s" % (
                 e.year,
@@ -1428,6 +1633,8 @@ def add_customer_mbox():
 
 
 def remove_customer_mbox():
+    """removes a customer from the database after as specified by the user"""
+
     global home_page_image, class_frame_img, analytics_img, customers_img, entry_img, inventory_img, transactions_img
     global sign_out_img, add_customer, remove_customer, add_c_window, remove_c_window, remove_button
     global remove_success_img, remove_error_img
@@ -1446,6 +1653,8 @@ def remove_customer_mbox():
     remove_c_window = PhotoImage(file="Images/remove_customer_window.png")
 
     def remove_c_click():
+        """removes customer if criteria is met"""
+
         global remove_success_img, remove_error_img
         b = sqlite3.connect(f"databases/{current_sign_in}.db")
         print(current_sign_in)
@@ -1467,7 +1676,7 @@ def remove_customer_mbox():
                     x=791, y=272
                 )
                 print("delete successful")
-        if found == False:
+        if found is False:
             print("code not found")
             Label(home_page, image=remove_error_img, bg="#5678A9").place(x=584, y=272)
 
