@@ -273,13 +273,13 @@ def sign_in_page_function():
     )
     sign_in_page_background.place(x=-3, y=-3)
 
-    def clear_un_sign_in():
+    def clear_un_sign_in(events):
         """ remove username placeholder after selection"""
 
         if username_signin.get() == "Username":
             username_signin.set("")
 
-    def clear_password_signin():
+    def clear_password_signin(events):
         """ remove password placeholder after selection"""
 
         if password_signin.get() == "Password":
@@ -513,12 +513,12 @@ def analytics_function():
     canvas.place(x=511, y=206)
     canvas.create_arc((0, 0, 190, 185), fill="#ff0000", outline="#ff0000", start=0, extent=angle_f)
     canvas.create_arc((0, 0, 190, 185), fill="#00ff00", outline="#00ff00", start=angle_f, extent=angle_g)
-
+    g = h[2]
     if h[2] == 0:
-        h[2] = 1
-    h_3 = h[2]-h[3]
-    f_1 = h[2] * 2
-    angle_f_1 = (360 * h[2]) / f_1
+        g = 1
+    h_3 = g-h[3]
+    f_1 = g * 2
+    angle_f_1 = (360 * g) / f_1
     angle_g_1 = (360 * h[3]) / f_1
     angle_h_1 = (360 * h_3) / f_1
     canvas = Canvas(home_page, width=190, height=186, bg="#5678A9", highlightthickness=0)
