@@ -251,7 +251,7 @@ def register_page_function():
 
 
 def sign_in_page_function():
-    """ sign in page function """
+    """sign in page function"""
 
     global titlepagef, sign_in_page_image, sign_in_page_background, back_btn_img, sign_error1, sign_error2
     global current_sign_in, username_signin
